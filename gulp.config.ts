@@ -17,9 +17,6 @@ export const PATH = {
       `!${APPS_SRC}/assets/styles/partials/**/*`,
       `!${APPS_SRC}/assets/vendors/**/*`
     ],
-    partial: {
-      less: `${APPS_SRC}/assets/styles/partials/**/*.less`
-    },
     css: `${APPS_SRC}/**/*.css`,
     ts: [
       'typings/browser.d.ts',
@@ -27,18 +24,11 @@ export const PATH = {
       `!${APPS_SRC}/**/*.spec.ts`
     ],
     e2e: `!${APPS_SRC}/**/*.e2e.ts`,
-    icons: `${APPS_SRC}/**/*.ico`,
-    assets: `${APPS_SRC}/assets/**/*`,
-    json: `${APPS_SRC}/**/*.json`,
     vendors: {
       css: [
-        `${APPS_SRC}/assets/vendors/bootstrap/dist/css/bootstrap.min.css`,
-        `${APPS_SRC}/assets/vendors/Font-Awesome/css/font-awesome.css`,
-        `${APPS_SRC}/assets/vendors/open-sans/css/open-sans.min.css`,
-        `${APPS_SRC}/assets/vendors/material-design-icons/material-icons.css`,
-        `${APPS_SRC}/assets/vendors/animate/animate.css`
+        `node_modules/bootstrap/dist/css/bootstrap.min.css`
       ]
-    },
+    },    
     deps: [
       'node_modules/systemjs/dist/system-polyfills.src.js',
       'node_modules/es6-shim/es6-shim.js',
@@ -50,8 +40,6 @@ export const PATH = {
       'node_modules/angular2/bundles/router.js',
       'node_modules/angular2/bundles/http.min.js',
       'node_modules/lodash/lodash.js',
-      'node_modules/intl/dist/Intl.min.js',
-      'node_modules/intl/locale-data/jsonp/en.js'
     ]
   },
 

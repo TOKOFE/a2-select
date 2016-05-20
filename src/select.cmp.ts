@@ -27,8 +27,8 @@ export class Select implements OnInit, OnDestroy {
   }
 
   @Input() minLength: number = 1;
-  @Input() idPropertyName: string = '';
-  @Input() textPropertyName: string = '';
+  @Input() idPropertyName: string = 'id';
+  @Input() textPropertyName: string = 'text';
   @Input() placeholder: string = '';
   @Input() isRequired: boolean = false;
 
@@ -86,7 +86,7 @@ export class Select implements OnInit, OnDestroy {
     if (clickedEl !== e.target || !(nodeName === 'INPUT' && className.indexOf('a2-select') >= 0)) {
       this.hideItems();
       if (clickedEl) {
-        clickedEl.value = this.selectedItem.displayText;
+        clickedEl.value = (this.selectedItem && this.selectedItem.displayText) || '';
         //this.typed.emit({event: event, inputTerm: this.selectedItem.displayText});
         //this.selected.emit({selectedItem: this.selectedItem});
       }

@@ -11,16 +11,10 @@ var tslint = require('gulp-tslint');
 var less = require('gulp-less');
 var del = require('del');
 var runSequence = require('run-sequence');
-var connect = require('gulp-connect');
 var gulpProtractor = require('gulp-protractor').protractor;
-var request = require('request');
-var source = require('vinyl-source-stream');
 var plumber = require('gulp-plumber');
 var inlineNg2Template = require('gulp-inline-ng2-template');
-var remapIstanbul = require('remap-istanbul');
-
 var _ = require('lodash');
-
 var argv = require('yargs').argv;
 
 gulp.task('default', 'list gulp tasks with description', ['help']);
@@ -32,38 +26,8 @@ gulp.task('build', 'build static files from source code', ['build:clean'], (call
     'build:html',
     'build:lib',
     'build:css',
-    'build:icons',
-    'build:assets',
-    'build:configFiles',
     callback
   );
-});
-
-gulp.task('serve', 'run a web server and watch *.ts, *.html and *.css files', [
-  'serve:browser-sync',
-  'serve:watch'
-]);
-
-gulp.task('test', 'run tests', (callback: any) => {
-  if (argv.files) {
-    runSequence(
-      'test:copy',
-      'test:tslint',
-      'test:buildjs',
-      'test:unit',
-      callback
-    );
-  } else {
-    runSequence(
-      'test:clean',
-      'test:copy',
-      'test:tslint',
-      'test:buildcss',
-      'test:buildjs',
-      'test:unit',
-      callback
-    );
-  }
 });
 
 //-----------------------------------------------------------
@@ -116,21 +80,6 @@ gulp.task('build:html', 'build html files into build directory', () => {
     .pipe(gulp.dest(PATH.dest.html));
 });
 
-gulp.task('build:icons', 'build image files into build directory', () => {
-  return gulp.src(PATH.src.icons)
-    .pipe(gulp.dest(PATH.dest.base));
-});
-
-gulp.task('build:assets', 'build image files into build directory', () => {
-  return gulp.src(PATH.src.assets)
-    .pipe(gulp.dest(PATH.dest.assets));
-});
-
-gulp.task('build:configFiles', 'copy config files into build directory', () => {
-  return gulp.src(PATH.src.json)
-    .pipe(gulp.dest(PATH.dest.base));
-});
-
 gulp.task('build:lib', 'build 3rd party files into build directory', () => {
   return gulp.src(PATH.src.deps)
     .pipe(gulp.dest(PATH.dest.lib));
@@ -139,6 +88,34 @@ gulp.task('build:lib', 'build 3rd party files into build directory', () => {
 //-----------------------------------------------------------
 // test
 //-----------------------------------------------------------
+
+gulp.task('serve', 'run a web server and watch *.ts, *.html and *.css files', [
+  'serve:browser-sync',
+  'serve:watch'
+]);
+
+gulp.task('test', 'run tests', (callback: any) => {
+  if (argv.files) {
+    runSequence(
+      'test:copy',
+      'test:tslint',
+      'test:buildjs',
+      'test:unit',
+      callback
+    );
+  } else {
+    runSequence(
+      'test:clean',
+      'test:copy',
+      'test:tslint',
+      'test:buildcss',
+      'test:buildjs',
+      'test:unit',
+      callback
+    );
+  }
+});
+
 gulp.task('test:clean', 'Clear Test Files', (done: any) => {
   return del('test');
 });
@@ -164,9 +141,7 @@ gulp.task('test:tslint', 'Tslint on test files', (done: any) => {
 
 gulp.task('test:buildcss', 'Compile less for inline implementation', () => {
   return gulp.src([
-      `test/src/**/*.less`,
-      `!test/src/assets/styles/partials/**/*`,
-      `!test/src/assets/vendors/**/*`
+      `test/src/**/*.less`
     ])
     .pipe(less())
     .pipe(gulp.dest('test/src'));
@@ -201,13 +176,6 @@ gulp.task('test:unit', 'Start a karma server and run a unit test', (done: any) =
   }).start(done);
 });
 
-gulp.task('test:server', 'run a web server for e2e test', () => {
-  return connect.server({
-    root: __dirname,
-    port: 8888
-  });
-});
-
 gulp.task('test:e2e', ['test:server', 'test:buildjs'], () => {
   return gulp.src(PATH.src.e2e)
     .pipe(gulpProtractor({
@@ -223,7 +191,6 @@ gulp.task('test:e2e', ['test:server', 'test:buildjs'], () => {
       throw e;
     })
     .on('end', () => { // when process exits:
-      connect.serverClose();
       del([
         PATH.src.base + '/apps/**/*.css',
         PATH.src.base + '/assets/styles/*.css'
@@ -243,7 +210,7 @@ gulp.task('serve:watch', 'watch *.ts, *.html and *.less files and reload associa
     .on('change', (event: any) => logger(event, 'Typescript'));
   gulp.watch([PATH.src.html], ['build:html', browserSync.reload])
     .on('change', (event: any) => logger(event, 'HTML'));
-  gulp.watch([PATH.src.less, PATH.src.partial.less], ['build:css', browserSync.reload])
+  gulp.watch([PATH.src.less], ['build:css', browserSync.reload])
     .on('change', (event: any) => logger(event, 'LESS'));
 });
 
@@ -251,14 +218,14 @@ gulp.task('serve:browser-sync', 'init the browserSync server', ['build'], () => 
   browserSync.init({
     port: 3002,
     logLevel: 'info',
-    logPrefix: 'FAR Client',
+    logPrefix: 'a2 select',
     server: {
-      baseDir: `${PATH.dest.base}`,
-      middleware: [
-        modRewrite([
-          '^[^\\.]*$ /index.html [L]'
-        ])
-      ]
+      baseDir: `${PATH.dest.base}`
+      // middleware: [
+      //   modRewrite([
+      //     '^[^\\.]*$ /index.html [L]'
+      //   ])
+      // ]
     },
     browser: 'google chrome'
   });

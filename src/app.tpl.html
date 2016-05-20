@@ -1,0 +1,12 @@
+<form class="form-inline">
+  <div>
+    <label for="city-name">City Name: </label>
+    <a2-select id="city-name"
+      [selectItems]="cityNames"
+      [placeholder]="'Please type city name...'"
+      (clicked)="onClick()"
+      (selected)="onSelect($event)"
+    >
+    </a2-select>
+  </div>  
+</form>
